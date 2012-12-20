@@ -59,6 +59,7 @@ namespace TestStack.BDDfy.Tests.Scanner
 
         int[] _arrayInput1 = new[] { 1, 2 };
         public string[] _arrayInput2 = new[] { "3", "4" };
+        private readonly InnerClass _inner = new InnerClass();
 
         public int[] ArrayInput1
         {
@@ -79,6 +80,24 @@ namespace TestStack.BDDfy.Tests.Scanner
         int Input1 { get { return _input1; } }
 
         public string Input2 { get { return _input2; } }
+
+        protected InnerClass Inner
+        {
+            get { return _inner; }
+        }
+
+        public class InnerClass
+        {
+            public int InnerValue1
+            {
+                get { return 4; }
+            }
+
+            public string InnerValue2
+            {
+                get { return "Input 2"; }
+            }
+        }
 
         int GetInput1(int someInput)
         {
@@ -133,7 +152,14 @@ namespace TestStack.BDDfy.Tests.Scanner
             var arguments = GetArguments(x => x.MethodWithInputs(Input1, Input2));
             AssertReturnedArguments(arguments, Input1, Input2);
         }
-        
+
+        [Test]
+        public void InputArgumentsProvidedUsingTwoPartProperty()
+        {
+            var arguments = GetArguments(x => x.MethodWithInputs(Inner.InnerValue1, Inner.InnerValue2.ToCharArray()[0]));
+            AssertReturnedArguments(arguments, Inner.InnerValue1, Inner.InnerValue2);
+        }
+
         [Test]
         public void InputArgumentsProvidedUsingInheritedFields()
         {
